@@ -1,4 +1,6 @@
+import json
 import urllib.request
+from typing import Union
 from urllib.error import HTTPError, URLError
 
 from oss2 import Auth, Bucket
@@ -23,3 +25,9 @@ class OSS(ModelMixin, DataMixin, BaseOSS):
         super().__init__()
         self.auth = Auth(accesskey_id, accesskey_secret)
         self.bucket = Bucket(self.auth, self.get_oss_endpoint(region), bucket_name)
+
+    def loads(self, path: str, is_json: bool = False) -> Union[dict, bytes]:
+        if is_json:
+            return json.load(self.bucket.get_object(path))
+        else:
+            return self.bucket.get_object(path).read()
