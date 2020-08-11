@@ -215,3 +215,4 @@ cython_debug/
 .idea
 main.py
 converter.py
+cache.json
