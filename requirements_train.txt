@@ -1,0 +1,6 @@
+oss2
+jieba
+ftfy
+numpy
+torch
+comet_ml

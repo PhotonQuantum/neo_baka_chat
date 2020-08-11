@@ -1,0 +1,6 @@
+oss2
+ftfy
+numpy
+torch
+fastapi
+uvicorn

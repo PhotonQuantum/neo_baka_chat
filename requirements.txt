@@ -1,2 +1,0 @@
-oss2
-jieba
