@@ -7,7 +7,6 @@ from comet_ml import Experiment
 from neo_baka_chat.oss import OSS
 from neo_baka_chat.train.loader import Config, load_session
 
-ALIYUN_PREFIX = os.environ["ALIYUN_PREFIX"]
 ALIYUN_ACCESSKEY_ID = os.environ["ALIYUN_ACCESSKEY_ID"]
 ALIYUN_ACCESSKEY_SECRET = os.environ["ALIYUN_ACCESSKEY_SECRET"]
 ALIYUN_REGION = os.environ["ALIYUN_REGION"]
