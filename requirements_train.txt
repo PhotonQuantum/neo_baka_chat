@@ -1,3 +1,4 @@
+pyyaml
 oss2
 jieba
 ftfy

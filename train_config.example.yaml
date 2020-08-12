@@ -1,0 +1,13 @@
+model:  s2s
+hparams:
+  batch_size: 128
+  learning_rate: 0.0001
+  decoder_learning_ratio: 5.0
+  max_epoch: 150
+  hidden_size: 500
+  n_layers: 2
+  attn_method: dot
+  encoder_dropout: 0.1
+  decoder_dropout: 0.1
+  teacher_forcing_ratio: 0.8
+  min_teacher_forcing_ratio: 0.01
