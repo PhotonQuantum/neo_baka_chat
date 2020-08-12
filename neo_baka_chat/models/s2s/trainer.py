@@ -3,7 +3,6 @@ import random
 from contextlib import nullcontext
 from copy import deepcopy
 from functools import partial
-from io import BytesIO
 from itertools import count
 from typing import Callable, Optional, Tuple
 
@@ -15,11 +14,11 @@ from torch import optim
 from torch.cuda.amp import GradScaler, autocast
 
 from neo_baka_chat.results import Result
+from neo_baka_chat.train.base import AbstractTrainer
 from .corpus import Corpus
 from .dataset import Dataset
 from .hparams import HyperParams
 from .net import EncoderRNN, LuongAttnDecoderRNN
-from ...train.base import AbstractTrainer
 
 
 class Trainer(AbstractTrainer):

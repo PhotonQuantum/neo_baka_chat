@@ -4,7 +4,7 @@ from itertools import zip_longest
 import torch
 from torch.utils.data import Dataset as _Dataset
 
-from neo_baka_chat.models.s2s.corpus import Corpus
+from .corpus import Corpus
 
 
 class Dataset(_Dataset):
