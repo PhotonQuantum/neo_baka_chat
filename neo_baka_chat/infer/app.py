@@ -12,7 +12,6 @@ logging.warning("Standby.")
 
 app = FastAPI()
 
-ALIYUN_PREFIX = os.environ["ALIYUN_PREFIX"]
 ALIYUN_ACCESSKEY_ID = os.environ["ALIYUN_ACCESSKEY_ID"]
 ALIYUN_ACCESSKEY_SECRET = os.environ["ALIYUN_ACCESSKEY_SECRET"]
 ALIYUN_REGION = os.environ["ALIYUN_REGION"]
