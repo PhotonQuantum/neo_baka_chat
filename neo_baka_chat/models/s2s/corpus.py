@@ -4,12 +4,13 @@ from typing import List, Tuple
 import jieba
 
 from neo_baka_chat.deserializer import Message, clean_text
+from neo_baka_chat.train.base import AbstractCorpus
 from neo_baka_chat.utils import split_list
 from neo_baka_chat.vocab import Vocab
 
 
 @dataclass(frozen=True)
-class Corpus:
+class Corpus(AbstractCorpus):
     vocab: Vocab
     pairs: List[Tuple[List[int], List[int]]]
 

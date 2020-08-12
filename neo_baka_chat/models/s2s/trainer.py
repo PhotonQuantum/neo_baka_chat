@@ -18,10 +18,12 @@ from .corpus import Corpus
 from .dataset import Dataset
 from .hparams import HyperParams
 from .net import EncoderRNN, LuongAttnDecoderRNN
+from ...train.base import AbstractTrainer
 
 
-class Trainer:
+class Trainer(AbstractTrainer):
     def __init__(self, corpus: Corpus, hparams: HyperParams, cuda: bool = True):
+        super().__init__(corpus, hparams, cuda)
         self.corpus = corpus
         self.vocab = corpus.vocab
         self.vocab_vector_size = len(self.vocab.i2w_table)
@@ -186,10 +188,3 @@ class Trainer:
                        deepcopy(self.embedding.state_dict()),
                        deepcopy(self.decoder.state_dict()))
         return Result(avg_loss, e, state_dicts)
-
-    @staticmethod
-    def dumps(state_dict):
-        tmp_buffer = BytesIO()
-        torch.save(state_dict, tmp_buffer)
-        tmp_buffer.seek(0)
-        return tmp_buffer.read()
