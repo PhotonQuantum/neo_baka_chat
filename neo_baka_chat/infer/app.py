@@ -1,9 +1,11 @@
+import datetime
 import logging
 import os
 import time
 from typing import List, Optional, Union
 
-from fastapi import FastAPI
+from fastapi import Body, FastAPI
+from pydantic import BaseModel
 
 from neo_baka_chat.oss import OSS
 from .loader import load_session
@@ -27,15 +29,38 @@ model = bucket.list_models(OSS_PREFIX)[-1]
 session = load_session(model)
 
 
-@app.get("/")
+class Stat(BaseModel):
+    version: datetime.datetime
+    net_meta: dict
+
+
+class InferenceResult(BaseModel):
+    response: List[str]
+    time: int
+
+
+class BaseUpdateResult(BaseModel):
+    updated: bool
+    current_version: datetime.datetime
+
+
+class UpdateResult(BaseUpdateResult):
+    updated = True
+    from_version: datetime.datetime
+
+
+class NoUpdateResult(BaseUpdateResult):
+    updated = False
+
+
+@app.get("/", response_model=Stat)
 async def root():
-    _version = model.datetime.strftime("%Y-%m-%d %H:%M:%S")
+    _version = model.datetime
     return {"version": _version, "net_meta": session.meta}
 
 
-@app.get("/infer")
-async def infer(sentences: Union[str, List[str]]):
-    sentences = sentences if isinstance(sentences, list) else [sentences]
+@app.post("/infer", response_model=InferenceResult)
+async def infer(sentences: List[str]):
     t_begin = time.time()
     result = session.run(sentences)
     t_end = time.time()
@@ -43,15 +68,16 @@ async def infer(sentences: Union[str, List[str]]):
     return {"response": result, "time": int((t_end - t_begin) * 1000)}
 
 
-@app.post("/update")
+# noinspection PyTypeChecker
+@app.post("/update", response_model=Union[UpdateResult, NoUpdateResult])
 async def update(force: Optional[bool] = False):
     global session, model
-    old_version = model.datetime.strftime("%Y-%m-%d %H:%M:%S")
+    old_version = model.datetime
     logging.warning("Finding latest model.")
     latest_model = bucket.list_models(OSS_PREFIX)[-1]
     if force or latest_model.datetime > model.datetime:
         logging.warning("Updating model.")
-        current_version = latest_model.datetime.strftime("%Y-%m-%d %H:%M:%S")
+        current_version = latest_model.datetime
         session = load_session(model)
         model = latest_model
         logging.warning(f"Model updated from {old_version} to {current_version}")
