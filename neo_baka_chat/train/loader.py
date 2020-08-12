@@ -20,7 +20,7 @@ class Config:
 
 def load_session(config: Config, bucket: OSS) -> TrainSession:
     logging.warning("Downloading dataset.")
-    datasets = bucket.list_dataset(config.dataset_prefix)[:2]
+    datasets = bucket.list_dataset(config.dataset_prefix)
     dataset: dict = reduce(lambda x, y: x + y, map(lambda x: x.read(), datasets))
     messages = deserialize(dataset)
 
