@@ -1,10 +1,11 @@
 import math
 import random
+from contextlib import nullcontext
 from copy import deepcopy
 from functools import partial
 from io import BytesIO
 from itertools import count
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 import torch
 from comet_ml import Experiment
@@ -131,9 +132,10 @@ class Trainer:
 
         return loss, sum(print_losses) / n_totals
 
-    def fit(self, experiment: Experiment, cuda: bool = True) -> Result:
-        # Prepare comet.ml logger
-        experiment.log_parameters(self.hparams)  # log hyper parameters
+    def fit(self, experiment: Optional[Experiment] = None, cuda: bool = True) -> Result:
+        if experiment:
+            # Prepare comet.ml logger
+            experiment.log_parameters(self.hparams)  # log hyper parameters
 
         # noinspection PyUnresolvedReferences,Mypy
         torch.backends.cudnn.benchmark = True  # enable cudnn benchmark mode for better performance
@@ -152,7 +154,7 @@ class Trainer:
         self.decoder.train()  # set the model to train mode
 
         iters = 0
-        with experiment.train():
+        with experiment.train() if experiment else nullcontext():
             for e in range(self.epoch):
                 batch_loss = 0.0
                 for batch in train_set:
@@ -161,7 +163,8 @@ class Trainer:
 
                     iters += 1
                     self.teacher_forcing_ratio = teaching_sched(iters)
-                    experiment.log_metric("teacher_forcing_ratio", self.teacher_forcing_ratio, iters)
+                    if experiment:
+                        experiment.log_metric("teacher_forcing_ratio", self.teacher_forcing_ratio, iters)
 
                     loss, step_loss = self.train_step(batch)
 
@@ -176,7 +179,8 @@ class Trainer:
                     decoder_optim.step()
 
                 avg_loss = batch_loss / len(train_set)
-                experiment.log_metric("epoch_loss", avg_loss, step=e)
+                if experiment:
+                    experiment.log_metric("epoch_loss", avg_loss, step=e)
 
         state_dicts = (deepcopy(self.encoder.state_dict()),
                        deepcopy(self.embedding.state_dict()),
