@@ -27,7 +27,7 @@ class InferenceSession:
 
         result_seq = self.inference.infer(flatten_seq)
         result_seqs = split_list(result_seq, self.vocab.sos_idx)
-        result_sentences = map(self.vocab.int_to_word, result_seqs)
+        result_sentences = map("".join, map(self.vocab.int_to_word, result_seqs))
         return list(result_sentences)
 
     def _match_vocab(self, sentence: str) -> List[str]:
