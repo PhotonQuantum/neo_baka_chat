@@ -29,6 +29,10 @@ model = bucket.list_models(OSS_PREFIX)[-1]
 session = load_session(model)
 
 
+class InferInput(BaseModel):
+    sentences: List[str]
+
+
 class Stat(BaseModel):
     version: datetime.datetime
     net_meta: dict
@@ -60,9 +64,9 @@ async def root():
 
 
 @app.post("/infer", response_model=InferenceResult)
-async def infer(sentences: List[str]):
+async def infer(_input: InferInput):
     t_begin = time.time()
-    result = session.run(sentences)
+    result = session.run(_input.sentences)
     t_end = time.time()
 
     return {"response": result, "time": int((t_end - t_begin) * 1000)}
