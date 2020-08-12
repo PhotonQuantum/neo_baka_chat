@@ -23,10 +23,10 @@ class InferenceSession:
     def run(self, sentences: List[str]) -> List[str]:
         split_sentences = map(self._match_vocab, sentences)
         sequences = map(self.vocab.word_to_int, split_sentences)
-        flatten_seq = reduce(lambda x, y: x + [self.vocab.sos_idx] + y, sequences)
+        flatten_seq = reduce(lambda x, y: x + [self.vocab.sep_idx] + y, sequences)
 
         result_seq = self.inference.infer(flatten_seq)
-        result_seqs = split_list(result_seq, self.vocab.sos_idx)
+        result_seqs = split_list(result_seq, self.vocab.sep_idx)
         result_sentences = map("".join, map(self.vocab.int_to_word, result_seqs))
         return list(result_sentences)
 
