@@ -4,7 +4,7 @@ hparams:
   seq_size: 64
   batch_size: 128
   learning_rate: 0.005
-  max_epoch: 250
+  max_epoch: 150
   embed_size: 256
   lstm_size: 512
   lstm_layers: 1

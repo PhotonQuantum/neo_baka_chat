@@ -14,6 +14,5 @@ class HyperParams(BaseHyperParams):
     attn_method: str = "dot"
     encoder_dropout: float = 0.1
     decoder_dropout: float = 0.1
-    teacher_forcing_ratio: float = 0.8
     min_teacher_forcing_ratio: float = 0.01
     gradients_norm: float = 5
