@@ -14,6 +14,7 @@ DISABLE_CUDA = os.environ.get("DISABLE_CUDA") == "true"
 class Config:
     model: str
     hparams: dict
+    mixed_precision: bool
     dataset_prefix: str
     save_model_prefix: str
 

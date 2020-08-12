@@ -9,6 +9,7 @@ import torch
 class Result:
     loss: float
     epoch: int
+    mixed_precision: bool
     state_dicts: Any
 
     def dump_state(self) -> bytes:

@@ -28,11 +28,11 @@ def main():
 
     logging.warning("Training.")
     experiment = Experiment(COMET_KEY, project_name=COMET_PROJECT) if COMET_KEY else None
-    result = session.train(experiment)
+    result = session.train(experiment, config.mixed_precision)
 
     logging.warning("Uploading model.")
     meta = session.hparams.dumps()
-    meta.update({"epoch": result.epoch, "loss": result.loss})
+    meta.update({"epoch": result.epoch, "loss": result.loss, "mixed_precision": result.mixed_precision})
     model = bucket.create_model(config.save_model_prefix)
     model.put("vocab.json", session.corpus.vocab.dumps())
     model.put("meta.json", meta)

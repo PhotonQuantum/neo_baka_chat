@@ -22,5 +22,5 @@ class TrainSession:
         self.corpus: AbstractCorpus = self.corpus_module.Corpus.build(messages)
         self.trainer: AbstractTrainer = self.trainer_module.Trainer(self.corpus, self.hparams, cuda)
 
-    def train(self, experiment: Optional[Experiment] = None) -> Result:
-        return self.trainer.fit(experiment)
+    def train(self, experiment: Optional[Experiment] = None, mixed_precision: bool = True) -> Result:
+        return self.trainer.fit(experiment, mixed_precision)

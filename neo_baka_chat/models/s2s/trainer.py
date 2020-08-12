@@ -12,6 +12,7 @@ from comet_ml import Experiment
 from torch import Tensor
 from torch import nn
 from torch import optim
+from torch.cuda.amp import GradScaler, autocast
 
 from neo_baka_chat.results import Result
 from .corpus import Corpus
@@ -134,7 +135,7 @@ class Trainer(AbstractTrainer):
 
         return loss, sum(print_losses) / n_totals
 
-    def fit(self, experiment: Optional[Experiment] = None) -> Result:
+    def fit(self, experiment: Optional[Experiment] = None, mixed_precision: bool = True) -> Result:
         if experiment:
             # Prepare comet.ml logger
             experiment.log_parameters(self.hparams)  # log hyper parameters
@@ -154,6 +155,8 @@ class Trainer(AbstractTrainer):
         self.encoder.train()  # set the model to train mode
         self.decoder.train()  # set the model to train mode
 
+        scaler = GradScaler() if mixed_precision and self.is_cuda else None
+
         iters = 0
         with experiment.train() if experiment else nullcontext():
             for e in range(self.epoch):
@@ -167,17 +170,26 @@ class Trainer(AbstractTrainer):
                     if experiment:
                         experiment.log_metric("teacher_forcing_ratio", self.teacher_forcing_ratio, iters)
 
-                    loss, step_loss = self.train_step(batch)
+                    with autocast() if scaler else nullcontext():
+                        loss, step_loss = self.train_step(batch)
 
                     batch_loss += step_loss
 
-                    loss.backward()
+                    if scaler:
+                        scaler.scale(loss).backward()
+                    else:
+                        loss.backward()
 
                     _ = torch.nn.utils.clip_grad_norm_(self.encoder.parameters(), self.gradients_norm)
                     _ = torch.nn.utils.clip_grad_norm_(self.decoder.parameters(), self.gradients_norm)
 
-                    encoder_optim.step()
-                    decoder_optim.step()
+                    if scaler:
+                        scaler.step(encoder_optim)
+                        scaler.step(decoder_optim)
+                        scaler.update()
+                    else:
+                        encoder_optim.step()
+                        decoder_optim.step()
 
                 avg_loss = batch_loss / len(train_set)
                 if experiment:
@@ -186,4 +198,4 @@ class Trainer(AbstractTrainer):
         state_dicts = (deepcopy(self.encoder.state_dict()),
                        deepcopy(self.embedding.state_dict()),
                        deepcopy(self.decoder.state_dict()))
-        return Result(avg_loss, e, state_dicts)
+        return Result(avg_loss, e, mixed_precision, state_dicts)
