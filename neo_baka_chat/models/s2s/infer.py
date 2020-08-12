@@ -42,7 +42,8 @@ class Inference(AbstractInference):
         torch.Tensor, torch.Tensor]:
         input_tensor = torch.LongTensor([[ix]]).cpu()
 
-        output, hidden = self.decoder(input_tensor, hidden, encoder_outputs)
+        with torch.no_grad():
+            output, hidden = self.decoder(input_tensor, hidden, encoder_outputs)
 
         # noinspection PyTypeChecker
         return output, hidden.detach()
