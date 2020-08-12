@@ -141,4 +141,4 @@ class Inference(AbstractInference):
         """
         input_vector = sequence + [self.vocab.eos_idx]
         output_vector = self._inference_beam(input_vector)
-        return output_vector
+        return output_vector[:-1]
