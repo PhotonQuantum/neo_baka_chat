@@ -134,14 +134,13 @@ class Trainer(AbstractTrainer):
 
         return loss, sum(print_losses) / n_totals
 
-    def fit(self, experiment: Optional[Experiment] = None, cuda: bool = True) -> Result:
+    def fit(self, experiment: Optional[Experiment] = None) -> Result:
         if experiment:
             # Prepare comet.ml logger
             experiment.log_parameters(self.hparams)  # log hyper parameters
 
         # noinspection PyUnresolvedReferences,Mypy
         torch.backends.cudnn.benchmark = True  # enable cudnn benchmark mode for better performance
-        self.is_cuda = cuda
         if self.is_cuda:
             self.encoder.cuda()  # move model to cuda
             self.decoder.cuda()  # move model to cuda

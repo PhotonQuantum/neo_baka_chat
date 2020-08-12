@@ -23,5 +23,5 @@ class AbstractTrainer(ABC):
     def __init__(self, corpus: AbstractCorpus, hparams: BaseHyperParams, cuda: bool = True): ...
 
     @abstractmethod
-    def fit(self, experiment: Optional[Experiment] = None, cuda: bool = True) -> Result:
+    def fit(self, experiment: Optional[Experiment] = None) -> Result:
         return NotImplemented
