@@ -1,5 +1,5 @@
 model: s2s
-mixed_precision: True
+mixed_precision: False
 hparams:
   batch_size: 128
   learning_rate: 0.0001
