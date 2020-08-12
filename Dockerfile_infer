@@ -1,0 +1,15 @@
+FROM python:slim
+
+MAINTAINER LightQuantum
+
+WORKDIR /app
+
+RUN pip install --upgrade pip
+
+RUN pip install torch==1.6.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
+RUN pip install oss2 ftfy numpy torch fastapi uvicorn
+
+COPY ./neo_baka_chat ./neo_baka_chat
+
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "neo_baka_chat.infer:app"]

@@ -1,0 +1,27 @@
+FROM python:slim as builder
+
+MAINTAINER LightQuantum
+
+RUN pip install --user --upgrade pip
+
+RUN pip install --user torch==1.6.0+cu92 -f https://download.pytorch.org/whl/torch_stable.html
+
+RUN pip install --user pyyaml oss2 jieba ftfy numpy
+
+RUN apt-get update \
+&& apt-get install gcc -y \
+&& apt-get clean
+
+RUN pip install --user comet_ml
+
+FROM python:slim as app
+
+MAINTAINER LightQuantum
+
+COPY --from=builder /root/.local /root/.local
+
+WORKDIR /train
+
+COPY ./neo_baka_chat ./neo_baka_chat
+
+CMD ["python", "-m", "neo_baka_chat.train"]
