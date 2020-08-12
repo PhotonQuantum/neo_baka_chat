@@ -45,7 +45,11 @@ class Vocab:
 
     @classmethod
     def loads(cls, data: dict) -> "Vocab":
-        return cls(**data)
+        _data = data.copy()
+        _data["nicknames"] = set(_data["nicknames"])
+        return cls(**_data)
 
     def dumps(self) -> dict:
-        return asdict(self)
+        data = asdict(self)
+        data["nicknames"] = list(data["nicknames"])
+        return data
