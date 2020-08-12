@@ -46,7 +46,13 @@ class Vocab:
     @classmethod
     def loads(cls, data: dict) -> "Vocab":
         _data = data.copy()
+
         _data["nicknames"] = set(_data["nicknames"])
+
+        i2w_table = _data["i2w_table"]
+        i2w_table = {int(k):v for k, v in i2w_table.items()}
+        _data["i2w_table"] = i2w_table
+
         return cls(**_data)
 
     def dumps(self) -> dict:
