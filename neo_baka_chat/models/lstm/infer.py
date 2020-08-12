@@ -57,7 +57,7 @@ class Inference(AbstractInference):
         return result
 
     def infer(self, sequence: List[int]) -> List[int]:
-        result = self._inference(sequence)
+        result = self._inference(sequence + [self.vocab.sep_idx])
         return reduce(lambda x, y: x + [self.vocab.sep_idx] + y, result)
 
     def load_state_dict(self, weights):
