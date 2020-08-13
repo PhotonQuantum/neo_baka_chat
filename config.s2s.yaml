@@ -11,5 +11,5 @@ hparams:
   encoder_dropout: 0.1
   decoder_dropout: 0.1
   min_teacher_forcing_ratio: 0.01
-dataset_prefix: dataset_v2
+dataset_prefix: dataset_v3
 save_model_prefix: s2s_model_neo

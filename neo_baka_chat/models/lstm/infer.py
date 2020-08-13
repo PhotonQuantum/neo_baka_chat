@@ -21,7 +21,7 @@ class Inference(AbstractInference):
 
         self.net = RNNModule(self.vocab_vector_size, self.hparams)
 
-        self.n = 2
+        self.n = 1
         self.temp = 1
 
     def _inference(self, sequence: List[int]) -> List[List[int]]:

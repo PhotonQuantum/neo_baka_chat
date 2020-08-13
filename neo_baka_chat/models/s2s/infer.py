@@ -28,9 +28,9 @@ class Inference(AbstractInference):
         self.decoder.eval()
 
         self.n = 1
-        self.b = 10
-        self.b_topk = 1
-        self.temp = 0.8
+        self.b = 20
+        self.b_topk = 5
+        self.temp = 1
 
     def load_state_dict(self, weights):
         encoder_weights, embed_weights, decoder_weights = weights

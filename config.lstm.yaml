@@ -4,10 +4,10 @@ hparams:
   seq_size: 64
   batch_size: 128
   learning_rate: 0.005
-  max_epoch: 150
+  max_epoch: 200
   embed_size: 256
   lstm_size: 512
   lstm_layers: 1
   gradients_norm: 5
-dataset_prefix: dataset_v2
+dataset_prefix: dataset_v3
 save_model_prefix: lstm_model_neo
